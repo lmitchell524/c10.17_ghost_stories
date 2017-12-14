@@ -1,21 +1,22 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <script src="https://code.jquery.com/jquery-3.1.0.js"></script>
         <title>Display Webcam Stream</title>
 
         <style>
 
             #container {
                 margin: 0px auto;
-                width: 500px;
-                height: 375px;
+                width: 400px;
+                height: 300px;
                 border: 10px #333 solid;
                 position: relative;
             }
 
             #videoElement {
-                width: 500px;
-                height: 375px;
+                width: 400px;
+                height: 300px;
                 background-color: #666;
                 position: absolute;
                 top: 0;
@@ -23,8 +24,8 @@
             }
 
             #canvas {
-                width: 500px;
-                height: 375px;
+                width: 400px;
+                height: 300px;
                 background-color: transparent;
                 position: absolute;
                 top: 0;
@@ -33,9 +34,18 @@
 
             .output {
                 display: block;
-                font-size: 2rem;
+                font-size: 1.5rem;
                 color: blue;
                 text-align: center;
+            }
+
+            #map {
+                height: 300px;
+                width: 400px;
+                border: 1px solid;
+                position: absolute;
+                top: 60%;
+                left: 25%;
             }
 
         </style>
@@ -49,8 +59,8 @@
         <div class="output">
 
         </div>
+        <div id="map"></div>
         <script>
-
             //video
             var video = document.querySelector("#videoElement");
 
@@ -71,6 +81,7 @@
             var coord;
             var average = [];
             var startPoint;
+            var mapLoaded = false;
             function getLocation() {
                 var options = {
                   enableHighAccuracy: true,
@@ -85,18 +96,22 @@
 
 
                 function showSuccess(pos) {
-                      coord = pos.coords;
-                      if (coord.accuracy){
-                          average.push(coord.accuracy);
-                      }
+                    coord = pos.coords;
+                    if (coord.accuracy) {
+                        average.push(coord.accuracy);
+                    }
 
-                      if (!startPoint){
-                          startPoint = {
-                              lat: coord.latitude,
-                              lon: coord.longitude
-                          };
-                      }
+                    if (!startPoint) {
+                        startPoint = {
+                            lat: coord.latitude,
+                            lon: coord.longitude
+                        };
+                    }
+                    if(mapLoaded === false){
+                    initMap();
 
+                    mapLoaded = true;
+                    }
                       console.log(coord);
                 }
 
@@ -138,7 +153,19 @@
                 return deg * (Math.PI/180)
             }
 
+            var map;
+            function initMap() {
+                map = new google.maps.Map(document.getElementById('map'), {
+                    center: {
+                        lat: coord.latitude,
+                        lng: coord.longitude
+                    },
+                    zoom: 18
+                });
+            }
 
         </script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCXqyuEI8wFxFvczjGjlbim35FAuco0oCU&"
+                async defer></script>
     </body>
 </html>
